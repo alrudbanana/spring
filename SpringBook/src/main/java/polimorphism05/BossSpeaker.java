@@ -2,7 +2,7 @@ package polimorphism05;
 
 import org.springframework.stereotype.Component;
 
-@Component("speaker")	//BossSpeaker speaker = new BossSpeaker(); 
+//@Component("speaker")	//BossSpeaker speaker = new BossSpeaker(); 
 public class BossSpeaker implements Speaker {
 
 	@Override
