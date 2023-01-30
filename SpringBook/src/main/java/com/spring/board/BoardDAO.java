@@ -13,7 +13,7 @@ import com.spring.common.JDBCUtil;
 
 @Repository("boardDAO") //Spring Framework 에서 자동으로 객체가 생성되어서 RAM 로드 
 
-public class BoardDAO implements BoardService {
+public class BoardDAO {
 	// DAO : Data Access Object 
 	// DataBase 에 CRUD 하는 객체 : select, Insert, Update, Delete
 	
@@ -25,7 +25,7 @@ public class BoardDAO implements BoardService {
 	
 	//2. SQL 쿼리를 담는 상수에 담아서 처리 변수 생성후 할당. : 상수명 : 전체 대문자로 사용
 	private final String BOARD_INSERT = 
-			"insert into board(seq,title,writer,content)values(select nvl(max(seq),0)+1 from board,?,?,?)"; 
+			"insert into board(seq,title,writer,content)values ((select nvl(max(seq),0)+1 from board),?,?,?)"; 
 	private final String BOARD_UPDATE = "update board set title=?, content=? where seq=?";
 	private final String BOARD_DELETE = "delete board where seq=?";
 	private final String BOARD_GET = "select * from board where seq =? "; // DataBase의 테이블에서 1개의 레코드만 출력 (상세보기)
@@ -38,7 +38,7 @@ public class BoardDAO implements BoardService {
 	//3-1. 글등록 처리 메소드: insertBoard()
 	//insert into board(seq,title,writer,content)values(select nvl(max(seq),0)+1 from board,?,?,?)"; <==? ? ?에 값을 할당 
 	
-	@Override
+
 	public void insertBoard(BoardDTO dto) {
 		System.out.println("==> JDBC로 InsertBoard() 기능처리 - 시작 ");
 		//connection 객체를 사용해서 preparedstatement 객체 활성화
@@ -68,9 +68,9 @@ public class BoardDAO implements BoardService {
 	//3-2. 글수정 처리 메소드: updateBoard()
 	// BOARD_UPDATE = "update board set title=?, content=? where seq=?"; <==각각의 ?에 값을 할당 
 	
-	@Override
+
 	public void updateBoard(BoardDTO dto) {
-		System.out.println("==> JDBC로 InsertBoard() 기능처리 - 시작 ");
+		System.out.println("==> JDBC로 updateBoard() 기능처리 - 시작 ");
 		
 		try {
 			//객체 생성 
@@ -84,14 +84,14 @@ public class BoardDAO implements BoardService {
 			
 			pstmt.executeUpdate();
 			
-			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 완료");
+			System.out.println("==> JDBC로 updateBoard() 기능처리 - 완료");
 			
 		}catch(Exception e){
 			e.printStackTrace();
-			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 실패");
+			System.out.println("==> JDBC로 updateBoard() 기능처리 - 실패");
 		}finally {
 			JDBCUtil.close(pstmt,conn);
-			
+			System.out.println("모든 객체가 잘 수정되었습니다. ");
 			//pstmt 의 ? 에 dto 에 넘어오는 변수 값 할당.
 		}
 	}
@@ -99,20 +99,21 @@ public class BoardDAO implements BoardService {
 	//3-3. 글 삭제 처리 메소드: deleteBoard
 	
 	//BOARD_DELETE = "delete board where seq=?"; <= seq의 ? <-에 값할당
-	@Override
+
 	public void deleteBoard(BoardDTO dto) {
-		System.out.println("==> JDBC로 InsertBoard() 기능처리 - 시작 ");
+		System.out.println("==> JDBC로 deleteBoard() 기능처리 - 시작 ");
 		try {
 			conn = JDBCUtil.getConnection();
 			pstmt = conn.prepareStatement(BOARD_DELETE);
 			pstmt.setInt(1, dto.getSeq()); //메모리에 있는 seq칼럼 가져와서 수정 
 			
 			pstmt.executeUpdate();
-			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 완료");
+			System.out.println("==> JDBC로 deleteBoard() 기능처리 - 완료");
 		}catch(Exception e) {
-			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 실패");
+			System.out.println("==> JDBC로 deleteBoard() 기능처리 - 실패");
 		}finally {
 			JDBCUtil.close(pstmt,conn);
+			System.out.println("모든 객체가 잘 삭제 되었습니다. ");
 			
 		}
 		
@@ -123,12 +124,12 @@ public class BoardDAO implements BoardService {
 	//3-4 글 조회 처리 메소드 : getBoard(): 레코드 1개를 DB에서 select 해서 DTO 객체에 담아서 리턴 
 	//private final String BOARD_GET = "select * from board where seq =? ";
 	
-	@Override
+
 	public BoardDTO getBoard(BoardDTO dto) {
-		System.out.println("==> JDBC로 InsertBoard() 기능처리 - 시작 ");
+		System.out.println("==> JDBC로 getBoard() 기능처리 - 시작 ");
 		
 		//리턴으로 돌려줄 변수 선언 : try 블락 밖에서 선언 
-		BoardDTO board = null; //select 해오는값
+		BoardDTO board = new BoardDTO(); //select 해오는값
 		try {
 			//객체 생성 : connection, preparedStatement 
 			conn = JDBCUtil.getConnection();
@@ -149,9 +150,9 @@ public class BoardDAO implements BoardService {
 			}else {
 				System.out.println("레코드의 결과가 없습니다. ");
 			}
-			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 완료");
+			System.out.println("==> JDBC로 getBoard() 기능처리 - 완료");
 		}catch(Exception e){
-			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 실패");
+			System.out.println("==> JDBC로 getBoard() 기능처리 - 실패");
 		}finally {
 			JDBCUtil.close(pstmt,conn);
 		}
@@ -160,9 +161,9 @@ public class BoardDAO implements BoardService {
 	
 	//3-4 글 상세 조회 처리 메소드 : getBoardList(). 모든 컬럼을 가져옴 
 	//String BOARD_LIST = "select * from board order by seq";
-		@Override
+
 		public List<BoardDTO> getBoardList(BoardDTO dto) {
-			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 시작 ");
+			System.out.println("==> JDBC로 getBoardList() 기능처리 - 시작 ");
 			
 			//리턴 돌려줄 변수 선언 :List <== 인터페이스 , 
 				//ArrayList, Vector, LinkedList <== List 인터페이스를 구현한 클래스 
@@ -197,9 +198,9 @@ public class BoardDAO implements BoardService {
 				}else {
 					System.out.println("테이블에 레코드가 비어있습니다. ");
 				}
-				System.out.println("==> JDBC로 InsertBoard() 기능처리 - 완료");	
+				System.out.println("==> JDBC로 getBoardList() 기능처리 - 완료");	
 				}catch(Exception e){
-					System.out.println("==> JDBC로 InsertBoard() 기능처리 - 실패");
+					System.out.println("==> JDBC로 getBoardList() 기능처리 - 실패");
 				}finally {
 					
 				}

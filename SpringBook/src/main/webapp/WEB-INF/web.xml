@@ -3,31 +3,54 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/spring/root-context.xml</param-value>
-	</context-param>
+<!-- XML 주석
+MVC : Controller setting : Spring에서 클라이언트의 요청 (GET, post)
+	- Get 요청 : url 통해서 요청  , Form 태그에서 method = get
+	- Post 요청 : Form 태그에서만 요청 할 수 있다. (form 태그에서 method = post)
+	- Java Servelet 이 controller 역할 
 	
-	<!-- Creates the Spring Container shared by all Servlets and Filters -->
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
-	<!-- Processes application requests -->
-	<servlet>
-		<servlet-name>appServlet</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
+	- java servelt 이 Controller 역할 
+	Controller Setting : 클라이언트 요청을 처리하는 Controller 지정방법 2가지 
 		
-	<servlet-mapping>
-		<servlet-name>appServlet</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
+		1. web. xml 설정 
+		2. @Controller 어노테이션을 사용해서 설정, @getMapping, @postMappring <== spring Boot
+		
+		Spring 에서는 DispatcherServelt 이 클라이언트의 get요청과 post 요청을 처리함. 
+		
+ -->
+ 
+ <!-- controller 맵핑 설정  -->
+ <servlet>
+ 	<servlet-name>action</servlet-name>
+ 	<servlet-class>com.spring.controller.DispatcherServelt</servlet-class>
+ </servlet>
+ 
+ <servlet-mapping>
+ 	<servlet-name>action</servlet-name>
+ 	<url-pattern>*.do</url-pattern>
+ </servlet-mapping>
 
+
+ 
+ <!-- cart 맵핑 설정  -->
+<servlet>
+	<servlet-name>cart</servlet-name>
+	<servlet-class>com.spring.controller.CartController</servlet-class>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>cart</servlet-name>
+	<url-pattern>*.ca</url-pattern>
+</servlet-mapping>
+
+ <!-- ActionConroller 맵핑 설정  -->
+<servlet>
+	<servlet-name>Action</servlet-name>
+	<servlet-class>com.spring.controller.ActionController</servlet-class>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>Action</servlet-name>
+	<url-pattern>*.action</url-pattern>
+</servlet-mapping>
 </web-app>
