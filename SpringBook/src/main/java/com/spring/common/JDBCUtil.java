@@ -42,7 +42,7 @@ public class JDBCUtil {
 	//2. DB연결을 제거하는 메소드 : Connection, PreparedStatement 객체를 제거 
 		//Insert, Update, Delete => Resultset 불필요 
 		
-		public static void close (PreparedStatement pstmt, Connection conn) {
+		public static void close (ResultSet rs, PreparedStatement pstmt, Connection conn) {
 			if( pstmt != null) {
 					try {
 						

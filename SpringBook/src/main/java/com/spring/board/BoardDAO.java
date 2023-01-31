@@ -61,7 +61,7 @@ public class BoardDAO {
 			e.printStackTrace();
 			System.out.println("==> JDBC로 InsertBoard() 기능처리 - 실패"); //오류가 있을 시 출력구문. 실패 확인 (test문장) 
 			}finally {
-			JDBCUtil.close(pstmt, conn);
+			JDBCUtil.close(pstmt, conn,rs);
 		}
  	}
 	
@@ -90,7 +90,7 @@ public class BoardDAO {
 			e.printStackTrace();
 			System.out.println("==> JDBC로 updateBoard() 기능처리 - 실패");
 		}finally {
-			JDBCUtil.close(pstmt,conn);
+			JDBCUtil.close(pstmt,conn,rs);
 			System.out.println("모든 객체가 잘 수정되었습니다. ");
 			//pstmt 의 ? 에 dto 에 넘어오는 변수 값 할당.
 		}
@@ -112,7 +112,7 @@ public class BoardDAO {
 		}catch(Exception e) {
 			System.out.println("==> JDBC로 deleteBoard() 기능처리 - 실패");
 		}finally {
-			JDBCUtil.close(pstmt,conn);
+			JDBCUtil.close(pstmt,conn,rs);
 			System.out.println("모든 객체가 잘 삭제 되었습니다. ");
 			
 		}
@@ -154,7 +154,7 @@ public class BoardDAO {
 		}catch(Exception e){
 			System.out.println("==> JDBC로 getBoard() 기능처리 - 실패");
 		}finally {
-			JDBCUtil.close(pstmt,conn);
+			JDBCUtil.close(pstmt,conn,rs);
 		}
 		return board;
 	}
