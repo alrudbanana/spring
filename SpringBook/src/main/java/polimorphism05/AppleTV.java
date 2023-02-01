@@ -1,17 +1,19 @@
 package polimorphism05;
 
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component
+
+
+@Component("appleTV")
 public class AppleTV implements TV {
 	
-	@Resource(name="speaker2")	//@Resource:  @Autowired + @Qualifier 를 하나로 사용함 . Java 의 Annotation 
-	private Speaker speaker;
-	
+	//@Resource(name="speaker")		//@Autowired + @Qualifier  
+	@Autowired
+	@Qualifier("speaker2")
+	private Speaker speaker ; 
+
 	@Override
 	public void powerOn() {
 		System.out.println("AppleTV - 전원을 켭니다.");

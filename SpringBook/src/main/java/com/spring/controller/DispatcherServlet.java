@@ -1,14 +1,19 @@
 package com.spring.controller;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 //import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.spring.board.BoardDAO;
+import com.spring.board.BoardDTO;
 import com.spring.users.UserDAO;
 import com.spring.users.UserDTO;
 import com.spring.users.UserService;
@@ -17,7 +22,6 @@ import com.spring.users.UserServiceImpl;
 /**
  * Servlet implementation class DispatcherServlet
  */
-
 //@WebServlet("/DispatcherServlet")
 public class DispatcherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -28,27 +32,32 @@ public class DispatcherServlet extends HttpServlet {
      
     }
 
-    //doGetÀ¸·Î ³Ñ¾î¿À´Â ¿äÃ»À» process () ¸Ş¼Òµå¿¡¼­ Ã³¸® ÇÏµµ·Ï ³Ñ±è
+    //doGetìœ¼ë¡œ ë„˜ì–´ì˜¤ëŠ” ìš”ì²­ì„ process () ë©”ì†Œë“œì—ì„œ ì²˜ë¦¬ í•˜ë„ë¡ ë„˜ê¹€
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		process(request, response); 
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// Post ¹æ½ÄÀ¸·Î º¯¼öÀÇ °ªÀ» ³Ñ±æ¶§ ÇÑ±Û ±ú¾îÁü ¹æÁö Ã³¸® 
+		// Post ë°©ì‹ìœ¼ë¡œ ë³€ìˆ˜ì˜ ê°’ì„ ë„˜ê¸¸ë•Œ í•œê¸€ ê¹¨ì–´ì§ ë°©ì§€ ì²˜ë¦¬ 
 		request.setCharacterEncoding("UTF-8");
 		process(request, response); 
 
 	}
 	
-	// doGet, doPost ÀÇ ¸ğµç ¿äÃ»À» Ã³¸® ÇÏ´Â ¸Ş¼Òµå 
+	// doGet, doPost ì˜ ëª¨ë“  ìš”ì²­ì„ ì²˜ë¦¬ í•˜ëŠ” ë©”ì†Œë“œ 
 	private void process (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// URL : http://localhost:8080/boardweb/getBoardList.do <-¿äÃ»¿¡ ´ëÇÑ Á¤º¸
-		// URI : /boardweb/getBoardList.do <-urlÀÇ ¼­¹öÆ÷Æ® ´ÙÀ½À¸·Î ¿À´Â Á¤º¸
+		// URL : http://localhost:8080/boardweb/getBoardList.do 
+		// URI : /boardweb/getBoardList.do
 		
 		
-		//1. Å¬¶óÀÌ¾ğÆ®ÀÇ ¿äÃ» path Á¤º¸¸¦ ÃßÃâ ÇÑ´Ù. 
+		//1. í´ë¼ì´ì–¸íŠ¸ì˜ ìš”ì²­ path ì •ë³´ë¥¼ ì¶”ì¶œ í•œë‹¤. 
+		
+
+		String url = request.getRequestURL().toString();   //URL ì •ë³´ë¥¼ ê²Œë”ë§ .toString()
+		System.out.println(url);
+			
 		String uri = request.getRequestURI(); 		///boardweb/getBoardList.do
 			System.out.println("uri : " + uri);
 		
@@ -56,62 +65,147 @@ public class DispatcherServlet extends HttpServlet {
 			System.out.println("path : "+ path);
 		
 		
-		//2. Å¬¶óÀÌ¾ğÆ®ÀÇ ¿äÃ» Á¤º¸¿¡ µû¶ó¼­ ÀûÀıÇÏ°Ô ºĞ±â Ã³¸®ÇÔ. 
+		//2. í´ë¼ì´ì–¸íŠ¸ì˜ ìš”ì²­ ì •ë³´ì— ë”°ë¼ì„œ ì ì ˆí•˜ê²Œ ë¶„ê¸° ì²˜ë¦¬í•¨. 
 		
 		if (path.equals("/login.do")) {
 			
-			// Å¬¶óÀÌ¾ğÆ® ¿äÃ»¿¡ ´ëÇØ¼­ : /loin.do ¿äÃ»
-			//2-1. Model : Service(ºñÁî´Ï½º ·ÎÁ÷À» Ã³¸®), (DTO, DAO)
-			//2-2. View ÆäÀÌÁö·Î Àü´Ş : *.jsp ÆÄÀÏ
+			// í´ë¼ì´ì–¸íŠ¸ ìš”ì²­ì— ëŒ€í•´ì„œ : /loin.do ìš”ì²­ 
+			//1. Model : Service (ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ì„ ì²˜ë¦¬)  , (DTO, DAO) 
+			//2. View í˜ì´ì§€ë¡œ ì „ë‹¬ : *.jsp íŒŒì¼
+						
+			System.out.println("ì‚¬ìš©ì ì •ë³´ ì²˜ë¦¬");
+			System.out.println("/login.do ìš”ì²­ì„ ë³´ëƒˆìŠµë‹ˆë‹¤. ");
 			
-			System.out.println("»ç¿ëÀÚ Á¤º¸ Ã³¸®");
-			System.out.println("/login.do ¿äÃ»À» º¸³Â½À´Ï´Ù. ");
-			
-		//3. Å¬¶óÀÌ¾ğÆ®¿¡¼­ º¸³»´Â º¯¼ö°ªÀ» ¹Ş¾Æ¼­ º¯¼ö¿¡ ÀúÀå
+			// 1. í´ë¼ì´ì–¸íŠ¸ì—ì„œ ë³´ë‚´ëŠ” ë³€ìˆ˜ ê°’ì„ ë°›ì•„ì„œ ë³€ìˆ˜ì— ì €ì¥ 
 			String id = request.getParameter("id"); 
 			String password = request.getParameter("password"); 
 			
-			System.out.println("Æû¿¡¼­ ³Ñ±ä º¯¼ö id °ª Ãâ·Â : " + id);
-			System.out.println("Æû¿¡¼­ ³Ñ±ä º¯¼ö id °ª Ãâ·Â : " + password);
+			System.out.println("í¼ì—ì„œ ë„˜ê¸´ ë³€ìˆ˜ id ê°‘ ì¶œë ¥ : " + id);
+			System.out.println("í¼ì—ì„œ ë„˜ê¸´ ë³€ìˆ˜ id ê°‘ ì¶œë ¥ : " + password);
 			
-			//3-1. Å¬¶óÀÌ¾ğÆ®¿¡¼­ ³Ñ±ä º¯¼ö°ªÀ» ¹Ş¾Æ¼­ ÀúÀåµÈ º¯¼ö¸¦ DTO¿¡ setter ÁÖÀÔ
-			UserDTO dto = new UserDTO();
-			dto.setId(id);
-			dto.setPassword(password);
+			//2. í´ë¼ì´ì–¸íŠ¸ì—ì„œ ë„˜ê¸´ ë³€ìˆ˜ê°’ì„ ë°›ì•„ì„œ ì €ì¥ëœ ë³€ìˆ˜ë¥¼ DTOì— Setter ì£¼ì… 
+			UserDTO dto = new UserDTO(); 
+			dto.setId(id); 
+			dto.setPassword(password); 
 			
-		//4. ºñÁî´Ï½º ·ÎÁ÷À» Ã³¸®ÇÏ´Â ÀÎÅÍÆäÀÌ½º¿¡ dto¸¦ ÁÖÀÔÇØ¼­ ºñÁî´Ï½º ·ÎÁ÷À» Ã³¸®
-			/*
-			@Autowired ¼­ºí¸´ÀÌ¶ó¼­ ¾î³ëÅ×ÀÌ¼ÇÀÌ ¾È¸ÔÈû -> °´Ã¼È­ ÇØ¾ßÇÔ
-			UserService user;
-			*/
-			//UserService user = new UserServiceImpl(); <- ¿À·ù¹ß»ı
+			//3. ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ì„ ì²˜ë¦¬í•˜ëŠ” ì¸í…Œí˜ì´ìŠ¤ì— dtoë¥¼ ì£¼ì… í•´ì„œ ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ì„ ì²˜ë¦¬
 			
-			UserDAO user = new UserDAO();
+			//UserService user = new UserServiceImpl(); 
+			UserDAO user = new UserDAO(); 
 			
-			UserDTO userD =  user.getUser(dto);//dto¸¦ ÁÖÀÔ
+			UserDTO userD = user.getUser(dto); 
 			
-			//4-1. DBÀÇ Å¬¶óÀÌ¾ğÆ®¿¡¼­ ³Ñ±ä ID¿Í PASSWORD¸¦ selectÇØ¼­ ±× °ªÀ» DTO¿¡ ´ã¾Æ¼­ ¸®ÅÏ
+			//DBì˜ í´ë¼ì´ì–¸íŠ¸ì—ì„œ ë„˜ê¸´ ID ì™€ Password ë¥¼ select í•´ì„œ ê·¸Âï¼  DTOì— ë‹´ì•„ì„œ ë¦¬í„´ 
 			System.out.println(userD);
 			
 			
-			
-			//4. ¹é¾ØµåÀÇ ·ÎÁ÷À» ¸ğµÎ Ã³¸® ÈÄ ViewÆäÀÌÁö·Î ÀÌµ¿ 
-			if(userD.getId() != null) {	//null°ªÀÌ ¾Æ´Ò¶§. // Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼ÛÇÑ ID¿Í pass°¡ DBÀÇ °ª°ú ÀÏÄ¡
-				response.sendRedirect("getBoardList.jsp"); //·Î±×ÀÎ ¼º°ø 
-				System.out.println("¾ÆÀÌµğ¿Í ÆĞ½º¿öµå ÀÏÄ¡");
-			}else {	//Client ¿¡°Ô Àü¼ÛÇÑ ID¿Í Pass Áß ÀÏÄ¡ÇÏÁö ¾ÊÀ»¶§. 
-				response.sendRedirect("login.jsp");
-				System.out.println("¾ÆÀÌµğ¿Í ÆĞ½º¿öµå ºÒÀÏÄ¡");
+			//4. ë°±ì—”ë“œì˜ ë¡œì§ì„ ëª¨ë‘ ì²˜ë¦¬í›„ View í˜ì´ì§€ë¡œ ì´ë™ 
+			if (userD != null) {  //í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡í•œ ID ì™€ Passê°€ DBì˜ ê°’ê³¼ ì¼ì¹˜ í• ë•Œ
+				response.sendRedirect("getBoardList.do"); 
+				System.out.println("ì•„ì´ë””ì™€ íŒ¨ìŠ¤ì›Œë“œ ì¼ì¹˜");
+			}else {  //Clientì—ê²Œ ì „ì†¡í•œ IDì™€ Passì¤‘ ì¼ì¹˜í•˜ì§€ ì•Šì„ ë•Œ  
+				response.sendRedirect("login.jsp"); 
+				System.out.println("ì•„ì´ë””ì™€ íŒ¨ìŠ¤ì›Œë“œ ë¶ˆì¼ì¹˜ ");
 			}
-
+					
 			
 		}else if (path.equals("/getBoardList.do")) {
+			System.out.println("ê²Œì‹œíŒ ì •ë³´ ì¶œë ¥ ");
 			
-			System.out.println("°Ô½ÃÆÇ Á¤º¸ Ãâ·Â ");
+			//1. Client ë¡œ ë¶€í„° /getBoardList.do ìš”ì²­ì„ ë°›ìŒ. (ê²Œì‹œíŒ ì •ë³´ë¥¼ ì¶œë ¥í•´ ë‹¬ë¼ê³  ìš”ì²­ )  
+			
+			//2. ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ ì²˜ë¦¬ 
+			BoardDTO dto = new BoardDTO(); 
+			BoardDAO dao = new BoardDAO(); 
+			
+			//boardList ì—ëŠ” DBì—ì„œ ì¿¼ë¦¬í•œ ë ˆì½”ë“œë¥¼ ë‹´ì€ DTO ê°ì²´ê°€ ë‚´ì¥ë˜ì–´ ìˆë‹¤. 
+			List<BoardDTO> boardList = dao.getBoardList(dto); 
+			
+			//3. í´ë¼ì´ì–¸íŠ¸ì—ê²Œ boardListë¥¼ ì „ë‹¬í•´ì•¼ í•œë‹¤. 
+			//(ì„¸ì…˜ ê°ì²´ì— boardList ê°ì²´ë¥¼ ë‹´ì•„ì„œ ì „ì†¡ ì‹œí‚´
+			// ì„¸ì…˜ì€ ì„œë²„ì˜ RAMì— ì €ì¥ë¨. 
+			// ì¿ í‚¤ : í´ë¼ì´ì–¸íŠ¸ ì‹œìŠ¤í…œì˜ HDD ì— ì •ë³´ë¥¼ ì €ì¥í•¨. 
+			HttpSession session = request.getSession(); 
+			//session ê°ì²´ì— ê°’ì„ ì €ì¥ , setAttribute("ë³€ìˆ˜ëª…", ê°ì²´ );
+			//session ê°ì²´ì— ê°’ì„ ê°€ì§€ê³ ì˜¬ë•Œ, getAttribute("ë³€ìˆ˜ëª…");                       
+			session.setAttribute("boardList", boardList); 
+			
+			
+			//4. ë·°í˜ì´ì§€ë¡œ ì´ë™ 
+			response.sendRedirect("getBoardList.jsp"); 
+			
+			
+		}else if (path.equals("/insertBoard.do")) {
+			
+			System.out.println("board í…Œì´ë¸”ì˜ ê°’ì„ ì €ì¥");
+			//1. í´ë¼ì´ì–¸íŠ¸ì—ì„œ ë„˜ì–´ì˜¤ëŠ” ë³€ìˆ˜ ê°’ì„ ë°›ì•„ì„œ ìƒˆë¡œìš´ ë³€ìˆ˜ì— ì €ì¥ 
+			String title = request.getParameter("title"); 
+			String writer = request.getParameter("writer"); 
+			String content = request.getParameter("content"); 
+			
+			//2.  ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ ì²˜ë¦¬  (í´ë¼ì´ì–¸íŠ¸ì˜ ë³€ìˆ˜ë¥¼ dto ì— ì €ì¥í›„ daoì˜ insertBoard(dto) 
+			BoardDTO dto = new BoardDTO(); 
+			BoardDAO dao = new BoardDAO(); 
+			
+				//dto ì˜ setter ë©”ì†Œë“œ í˜¸ì¶œì‹œ í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë„˜ì–´ë…¸ëŠ” ë³€ìˆ˜ë¥¼ í• ë‹¹. 
+			dto.setTitle(title); 
+			dto.setWriter(writer); 
+			dto.setContent(content); 
+			
+			dao.insertBoard(dto); 	//DB ì— Insert/ Update /delete  ê°€ ì™„ë£Œë¨ 
+			
+			//3. view í˜ì´ì§€ë¥¼ ì „ì†¡ 
+			response.sendRedirect("getBoardList.do");  
+			
+			
+		}else if (path.equals("/getBoard.do")) {
+			
+			System.out.println("ê²Œì‹œíŒ ìƒì„¸ ë‚´ìš©ë³´ê¸° - /getBoard.do ìš”ì²­í•¨");	
+			
+			//1. í´ë¼ì´ì–¸íŠ¸ì˜ ë„˜ê¸´ ë³€ìˆ˜ ê°’ ë°›ê¸° ("seq") 
+			String seq = request.getParameter("seq");    //getParameter ë¡œ ë„˜ì–´ì˜¤ëŠ” ê°’ì€ ëª¨ë‘ String
+			System.out.println("seq ë³€ìˆ˜ê°’ : " + seq);
+			
+			//2. ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ ì²˜ë¦¬ : íŒŒë¼ë¯¸í„°ë¡œ ë°›ì€ ê°’ì„ DTOì— ì €ì¥í›„ getBoard(dto) ë©”ì†Œë“œ í˜¸ì¶œ 
+			BoardDTO dto = new BoardDTO(); 
+			BoardDAO dao = new BoardDAO(); 
+			
+			//í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë°›ì€ ê°’ì„ dtoì— setter ì£¼ì… 
+			dto.setSeq(Integer.parseInt(seq)); 
+			
+			//ë¦¬í„´ì„ ë°›ì•„ì˜¨ë‹¤. 
+			BoardDTO board = dao.getBoard(dto); 
+			
+			//DBì˜ ê°’ì´ ì €ì¥ëœ DTO (board) ë¥¼ session ë³€ìˆ˜ì— í• ë‹¹í•´ì„œ ë·° í˜ì´ì§€ë¡œ ì „ë‹¬
+			HttpSession session = request.getSession(); 
+			
+			session.setAttribute("board", board); 
+			
+			//3. ë·° í˜ì´ì§€ë¡œ ì „ë‹¬ 
+			response.sendRedirect("getBoard.jsp"); 
+			
+			
+		}else if (path.equals("/deleteBoard.do")) {		
+			System.out.println("ê¸€ ì‚­ì œ ì²˜ë¦¬ ");
+			
+			//1. í´ë¼ì´ì–¸íŠ¸ì—ì„œ ë„˜ê¸´ seq ë¥¼ ë°›ì•„ì„œ ë³€ìˆ˜ì— ì €ì¥í•¨. 
+			String seq = request.getParameter("seq"); 
+			
+			//2. DTO, DAOì— ë¡œì§ ì²˜ë¦¬ (ë°±ì—”ë“œì˜ ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ ì²˜ë¦¬) 
+			BoardDTO dto = new BoardDTO(); 
+			BoardDAO dao = new BoardDAO(); 
+			
+			dto.setSeq(Integer.parseInt(seq)); 
+			
+			dao.deleteBoard(dto); 
+			
+			//3. ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§ ì²˜ë¦¬ ì™„ë£Œí›„ View í˜ì´ì§€ë¡œ ì´ë™ 
+			response.sendRedirect("getBoardList.do"); 		
+			
 			
 		}else if (path.equals("/logout.do")) {
 			
-			System.out.println("»ç¿ëÀÚ ·Î±× ¾Æ¿ô Ã³¸®");
+			System.out.println("ì‚¬ìš©ì ë¡œê·¸ ì•„ì›ƒ ì²˜ë¦¬");
 		}
 		
 		
