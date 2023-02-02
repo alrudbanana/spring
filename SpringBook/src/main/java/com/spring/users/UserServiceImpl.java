@@ -10,7 +10,7 @@ public class UserServiceImpl implements UserService {
 
 				// @Autowired 어노테이션이 Spring Framework에 생성 Bean 의 타입을 
 	@Autowired					//타입을 찾아서 주입 (DI) 
-	UserDAO userDAO ; 
+	UserDAO userDAO ;
 
 	@Override
 	public UserDTO getUser(UserDTO dto) {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.spring.common.JDBCUtil;
 
 @Repository("userDAO")	//DAO 에 객체를 자동으로 Spring Framework에 생성 : Bean 생성 
+
 public class UserDAO  {
 
 	//JDBC 관련 변수 선언 (Connection, PreparedStatement(Statement), ResultSet)
@@ -44,15 +45,12 @@ public class UserDAO  {
 			if (rs.next()){		//레코드의 값이 존재할때 커서를 해당 레코드로 이동 
 				
 				System.out.println("DB에서 값이 잘 select 되었습니다");
-				
 				user.setId(rs.getString("ID"));
 				user.setPassword(rs.getString("PASSWORD"));
 				user.setName(rs.getString("NAME"));
 				user.setRole(rs.getString("ROLE"));
-
 				System.out.println("JDBC로 DB를 잘 쿼리해서 DTO로 잘 전송");
 			}
-
 
 		}catch (Exception e) {
 			e.printStackTrace();  //개발이 완료후에는 주석 처리 
@@ -62,9 +60,6 @@ public class UserDAO  {
 			//모두 사용한 객체를 제거 : conn, pstmt, rs 
 			JDBCUtil.close(rs, pstmt, conn);
 		}
-
 		return user; 
 	}
-
-
 }

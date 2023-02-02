@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 public class BoardServiceImpl implements BoardService {
 
 		@Autowired
-		BoardDAO boardDAO;
+		BoardDAO boardDAO;	//객체의 메소드를 사용하기 위해서 . 클래스 : 변수  
 		
 	@Override
 	public void insertBoard(BoardDTO dto) {
 		// TODO Auto-generated method stub
-		boardDAO.insertBoard(dto);
+		boardDAO.insertBoard(dto); //dto 의 값을 클라이언트로 부터 받아서 setter로 
 	}
 
 	@Override

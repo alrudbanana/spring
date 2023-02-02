@@ -10,7 +10,7 @@ public class Client_Test_delete {
 
 	public static void main(String[] args) {
 	
-		AbstractApplicationContext factory = 
+		AbstractApplicationContext factory = //xml 에 있는 bean을 객체화? => xml 을 쓰려면 이 언어를 .......
 				new GenericXmlApplicationContext("applicationContext.xml");
 
 		// 스프링 컨테이너로 부터 Bean 을 호출 : BoardService : 인터페이스 
